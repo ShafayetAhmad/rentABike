@@ -26,11 +26,10 @@ public class BikeController {
 
         if ("ADMIN".equals(currentUserRole)) {
             bike.setAppUserRole(currentUserRole);
-            System.out.println(currentUserRole);
             bikeRepository.save(bike);
             return ResponseEntity.status(HttpStatus.CREATED).body("Bike added successfully");
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(currentUserRole + "Only Admin users can add bikes");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only Admin users can add bikes");
         }
     }
 
