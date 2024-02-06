@@ -1,6 +1,5 @@
 package com.shafayet.rentABike.appuser;
 
-import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,31 +29,28 @@ public class AppUser implements UserDetails {
             generator = "user_sequence"
     )
     private Long id;
-    private String name;
-    private String username;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private AppUserRole appUserRole;
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
-    public AppUser(String name,
-                   String username,
+
+    public AppUser(String firstName,
+                   String lastName,
                    String email,
                    String password,
-                   AppUserRole appUserRole,
-                   Boolean locked,
-                   Boolean enabled) {
-        this.name = name;
-        this.username = username;
+                   AppUserRole appUserRole) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;
-        this.locked = locked;
-        this.enabled = enabled;
     }
 
-    @Enumerated(EnumType.STRING)
-    private AppUserRole appUserRole;
-    private Boolean locked;
-    private Boolean enabled;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appUserRole.name());
@@ -65,10 +62,13 @@ public class AppUser implements UserDetails {
         return password;
     }
 
-    @Override
     public String getUsername() {
-        return username;
+        return email;
     }
+
+    public String getFirstName() { return firstName; }
+
+    public String getLastName() { return lastName; }
 
     @Override
     public boolean isAccountNonExpired() {
